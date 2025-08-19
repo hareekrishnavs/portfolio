@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Global layout */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-200 antialiased;
+  font-family: system-ui, sans-serif;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-zinc-100 font-semibold;
+}
+
+h1 { @apply text-4xl md:text-5xl; }
+h2 { @apply text-3xl md:text-4xl; }
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: high-quality;
+}
+
+/* Links */
+a {
+  @apply text-indigo-400 hover:text-indigo-300 underline-offset-2 hover:underline;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium
+         transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-500;
+}
+
+.btn-ghost {
+  @apply bg-zinc-800 text-zinc-200 hover:bg-zinc-700;
+}
+
+/* Cards / containers */
+.card {
+  @apply rounded-2xl bg-zinc-900/70 p-6 shadow-xl ring-1 ring-zinc-800;
+}
+
+/* Muted text */
+.muted {
+  @apply text-zinc-400;
+}
+
+/* Page container */
+.container {
+  @apply mx-auto max-w-6xl px-4 py-8;
+}
+
+
+
