@@ -1,10 +1,10 @@
 import { useState } from "react";
-import PROFILE_SRC from "../assets/profile.png";
+import PROFILE_SRC from "../../public/profile.png";
 
 export default function Navbar({ tab, setTab }) {
   const EMAIL = "hareekrishna.v.s@gmail.com";
   const LINKEDIN_URL = "https://www.linkedin.com/in/hk2226/"; 
-  const RESUME_URL = "https://github.com/hareekrishnavs/portfolio/blob/main/src/assets/resume.pdf";
+  const RESUME_URL = `${import.meta.env.BASE_URL || "/"}resume.pdf`;
 
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
