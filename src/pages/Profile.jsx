@@ -1,207 +1,214 @@
-import { useEffect, useState, memo } from "react";
-import {
-  getAbout,
-  getEducation,
-  getProjects,
-  getExperience,
-  getCertificates,
-  getCompetitive,
-  // optional: if you have /api/pending_updates uncomment the line and the fetch below
-  // getPendingUpdates,
-} from "../lib/api";
+import React from "react";
+import profileData from "../data/profileData.json";
 
-/* --- Tiny UI helpers --- */
-const SectionCard = ({ title, children }) => (
-  <section className="rounded-2xl bg-zinc-900/60 p-6 shadow-lg ring-1 ring-zinc-800">
-    <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">{title}</h2>
+function previewLink(url) {
+  if (!url || typeof url !== "string") return url;
+  url = url.trim();
+
+  const ghBlob = url.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.*)$/);
+  if (ghBlob) {
+    const [, user, repo, path] = ghBlob;
+    return `https://raw.githubusercontent.com/${user}/${repo}/${path}`;
+  }
+  if (url.startsWith("https://raw.githubusercontent.com/")) return url;
+  if (url.includes(".github.io/")) return url;
+
+  const gdrive1 = url.match(/\/d\/([a-zA-Z0-9_-]+)(\/|$)/);
+  const gdrive2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const gId = (gdrive1 && gdrive1[1]) || (gdrive2 && gdrive2[1]);
+  if (gId) return `https://drive.google.com/file/d/${gId}/preview`;
+
+  if (url.includes("dropbox.com")) {
+    if (url.includes("?dl=0")) return url.replace("?dl=0", "?raw=1");
+    if (url.includes("?dl=1")) return url.replace("?dl=1", "?raw=1");
+    return url;
+  }
+
+  if (url.includes("/blob/") && url.includes("github.com/")) {
+    return url.replace("github.com/", "raw.githubusercontent.com/").replace("/blob/", "/");
+  }
+  return url;
+}
+
+
+const Section = ({ title, children, className = "" }) => (
+  <section className={`rounded-2xl bg-zinc-900/60 p-6 shadow-sm ring-1 ring-zinc-800 ${className}`}>
+    <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-100 mb-4">{title}</h2>
     {children}
   </section>
 );
 
-const Badge = memo(({ children }) => (
-  <span className="inline-flex items-center rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-300 ring-1 ring-zinc-700">
-    {children}
-  </span>
-));
-
-const Skeleton = ({ className = "" }) => (
-  <div className={`animate-pulse rounded-md bg-zinc-800/60 ${className}`} />
+const BodyText = ({ children }) => (
+  <div className="text-base text-zinc-300 leading-relaxed whitespace-pre-line">{children}</div>
 );
 
+const Badge = ({ children }) => (
+  <span className="inline-flex items-center rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-200 ring-1 ring-zinc-700">
+    {children}
+  </span>
+);
+
+const ActionLink = ({ href, children }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 hover:bg-indigo-600 hover:text-white transition">
+    {children}
+  </a>
+);
+
+
 export default function Profile() {
-  const [loading, setLoading] = useState(true);
-  const [about, setAbout] = useState(null);
-  const [education, setEducation] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [experience, setExperience] = useState([]);
-  const [certs, setCerts] = useState([]);
-  const [competitive, setCompetitive] = useState([]);
-  const [pending, setPending] = useState(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const promises = [
-          getAbout(),
-          getEducation(),
-          getProjects(),
-          getExperience(),
-          getCertificates(),
-          getCompetitive(),
-          // getPendingUpdates(), // <- optional if you have this endpoint
-        ];
-        const [a, e, p, x, c, cp /*, pend */] = await Promise.all(promises);
-        setAbout(a);
-        setEducation(e);
-        setProjects(p);
-        setExperience(x);
-        setCerts(c);
-        setCompetitive(cp);
-        // setPending(pend); // optional
-      } catch (err) {
-        setError(err.message || "Failed to load data");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto max-w-6xl px-4 py-10 space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-40" />
-        <Skeleton className="h-40" />
-        <Skeleton className="h-72" />
-        <Skeleton className="h-72" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto max-w-6xl px-4 py-10 text-rose-400">
-        {error}
-      </div>
-    );
-  }
+  const {
+    about_me,
+    education,
+    projects = [],
+    certificates = [],
+    competitive = [],
+    experience = [],
+  } = profileData;
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-10 space-y-8">
-      {/* Banner (only if pending updates exist) */}
-      {(pending?.notes?.length || true) && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-900/10 p-4 text-sm text-amber-200">
-          ℹ️ More information, images, links, and documents will be updated soon.
-        </div>
-      )}
+    <div className="font-sans container mx-auto max-w-6xl px-4 py-10 space-y-10 text-zinc-300">
+      <header>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-100">Hareekrishna V S</h1>
+        <p className="mt-1 text-lg text-zinc-400">Backend Developer · Machine Learning & Deep Learning Enthusiast</p>
+      </header>
 
-      {/* About */}
-      <SectionCard title="About">
-        {about?.summary ? (
-          <pre className="whitespace-pre-wrap text-sm text-zinc-300">{about.summary}</pre>
-        ) : (
-          <div className="text-sm text-zinc-400">No about info yet.</div>
-        )}
-      </SectionCard>
+      <Section title="About">
+        <BodyText>{about_me?.summary || "—"}</BodyText>
+      </Section>
 
-      {/* Education */}
-      <SectionCard title="Education">
+      <Section title="Education">
         {education?.summary ? (
-          <pre className="whitespace-pre-wrap text-sm text-zinc-300">{education.summary}</pre>
+          <BodyText>{education.summary}</BodyText>
         ) : (
-          <div className="text-sm text-zinc-400">No education details yet.</div>
-        )}
-      </SectionCard>
+          <div className="space-y-4">
+            {Array.isArray(education) && education.length > 0 ? (
+              education.map((edu, i) => (
+                <div key={i} className="rounded-xl bg-zinc-900 p-4 ring-1 ring-zinc-800">
+                  <div className="text-lg font-semibold text-zinc-100">{edu.organization}</div>
+                  <div className="text-sm text-zinc-400">{edu.degree || edu.course || ""} {edu.duration ? `· ${edu.duration}` : ""}</div>
 
-      {/* Experience (timeline-ish) */}
-      <SectionCard title="Experience">
-        {experience?.length ? (
-          <ul className="space-y-6">
-            {experience.map((e, i) => (
-              <li key={i} className="relative pl-5">
-                {/* timeline line + dot */}
-                <div className="absolute left-0 top-2 h-full w-px bg-zinc-800" aria-hidden />
-                <div className="absolute -left-[3px] top-2 h-1.5 w-1.5 rounded-full bg-indigo-500" aria-hidden />
+                  {edu.gpa && <div className="mt-2 text-sm text-zinc-300">GPA: {edu.gpa}</div>}
 
-                <div className="rounded-xl bg-zinc-900 p-4 ring-1 ring-zinc-800">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="font-semibold text-zinc-100">{e.organization}</div>
-                    {e.location && <span className="text-xs text-zinc-400">· {e.location}</span>}
-                  </div>
-
-                  {!!e.roles?.length && (
-                    <ul className="mt-2 list-disc pl-6 text-sm text-zinc-300">
-                      {e.roles.map((r, idx) => <li key={idx}>{r}</li>)}
-                    </ul>
-                  )}
-
-                  {!!e.responsibilities?.length && (
-                    <ul className="mt-3 list-disc pl-6 text-sm text-zinc-300">
-                      {e.responsibilities.map((r, idx) => <li key={idx}>{r}</li>)}
-                    </ul>
-                  )}
+                  {edu.volunteering?.length ? (
+                    <div className="mt-3">
+                      <div className="text-sm text-zinc-400 mb-1">Volunteering</div>
+                      <ul className="list-disc pl-6 text-base text-zinc-300 space-y-1">
+                        {edu.volunteering.map((v, idx) => <li key={idx}>{v}</li>)}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="text-sm text-zinc-400">No experience added yet.</div>
+              ))
+            ) : (
+              <BodyText>No education details available.</BodyText>
+            )}
+          </div>
         )}
-      </SectionCard>
+      </Section>
 
-      {/* Projects */}
-      <SectionCard title="Projects">
-        {projects?.length ? (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {projects.map((p, i) => (
-              <div key={i} className="rounded-xl bg-zinc-900 p-4 ring-1 ring-zinc-800">
-                <div className="font-semibold text-zinc-100">{p.project_name}</div>
-                {p.description && (
-                  <div className="mt-1 text-sm text-zinc-300">{p.description}</div>
-                )}
-
-                {!!p.technologies?.length && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {p.technologies.map((t, idx) => <Badge key={idx}>{t}</Badge>)}
+      <Section title="Experience">
+        {experience.length > 0 ? (
+          <div className="space-y-6">
+            {experience.map((exp, idx) => (
+              <article key={idx} className="rounded-xl bg-zinc-900 p-5 ring-1 ring-zinc-800">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-lg font-semibold text-zinc-100">{exp.organization}</div>
+                    {exp.location && <div className="text-sm text-zinc-400">{exp.location}</div>}
+                    {exp.roles?.length ? (
+                      <div className="mt-2">
+                        {exp.roles.map((r, i) => (
+                          <div key={i} className="text-sm text-zinc-200">
+                            <span className="font-medium">{r.split(":")[0] || r}</span>
+                            {r.includes(":") ? <span className="text-zinc-400"> {r.split(":").slice(1).join(":")}</span> : null}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
-                )}
 
-                {p.status && (
-                  <div className="mt-2">
-                    <Badge>Status: {p.status}</Badge>
+                  <div className="flex items-center gap-2">
+                    {exp.links?.[0] ? (
+                      <a href={previewLink(exp.links[0])} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-200 hover:text-white">
+                        Certificate
+                      </a>
+                    ) : null}
                   </div>
-                )}
-              </div>
+                </div>
+
+                {exp.responsibilities?.length ? (
+                  <ul className="mt-4 list-disc pl-6 text-base text-zinc-300 space-y-1">
+                    {exp.responsibilities.map((r, i3) => <li key={i3}>{r}</li>)}
+                  </ul>
+                ) : null}
+
+                {exp.technologies?.length ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {exp.technologies.map((t, k) => <Badge key={k}>{t}</Badge>)}
+                  </div>
+                ) : null}
+              </article>
             ))}
           </div>
         ) : (
-          <div className="text-sm text-zinc-400">No projects yet.</div>
+          <BodyText>No experience listed yet.</BodyText>
         )}
-      </SectionCard>
+      </Section>
 
-      {/* Certificates & Competitive Programming */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <SectionCard title="Certificates">
-          {certs?.length ? (
-            <ul className="list-disc pl-6 text-sm text-zinc-300">
-              {certs.map((c, i) => <li key={i}>{c}</li>)}
-            </ul>
-          ) : (
-            <div className="text-sm text-zinc-400">No certificates listed.</div>
-          )}
-        </SectionCard>
+      <Section title="Projects">
+        {projects.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {projects.map((p, i) => {
+              const link = (p.Link && p.Link[0]) || (p.links && p.links[0]) || p.github || null;
+              return (
+                <div key={i} className="rounded-xl bg-zinc-900 p-5 ring-1 ring-zinc-800 flex flex-col justify-between">
+                  <div>
+                    <div className="text-lg font-semibold text-zinc-100">{p.project_name}</div>
+                    {p.description && <div className="mt-2 text-base text-zinc-300">{p.description}</div>}
+                    {!!p.technologies?.length && <div className="mt-3 flex flex-wrap gap-2">{p.technologies.map((t, k) => <Badge key={k}>{t}</Badge>)}</div>}
+                  </div>
 
-        <SectionCard title="Competitive Programming">
-          {competitive?.length ? (
-            <ul className="list-disc pl-6 text-sm text-zinc-300">
-              {competitive.map((c, i) => <li key={i}>{c}</li>)}
-            </ul>
-          ) : (
-            <div className="text-sm text-zinc-400">No platforms added.</div>
-          )}
-        </SectionCard>
-      </div>
+                  <div className="mt-4 flex justify-end">
+                    {link ? <ActionLink href={previewLink(link)}>View GitHub</ActionLink> : <div className="text-xs text-zinc-500">No repo link</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <BodyText>No projects yet.</BodyText>
+        )}
+      </Section>
+
+      <Section title="Continuing Education">
+        {certificates.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {certificates.map((c, i) => {
+              const raw = c.Link?.[0] || c.link || null;
+              const title = c.Topic || c.title || c;
+              return (
+                <div key={i} className="rounded-xl bg-zinc-900 p-4 ring-1 ring-zinc-800 flex items-center justify-between">
+                  <div className="text-base text-zinc-300 font-medium">{title}</div>
+                  {raw ? <a href={previewLink(raw)} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-200 hover:text-white">Open</a> : <div className="text-xs text-zinc-500">No link</div>}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <BodyText>No certificates listed.</BodyText>
+        )}
+
+        {Array.isArray(competitive) && competitive.length > 0 && (
+          <div className="mt-6">
+            <div className="text-base text-zinc-400 mb-3">Competitive Programming</div>
+            <div className="flex flex-wrap gap-2">
+              {competitive.map((c, i) => <Badge key={i}>{c}</Badge>)}
+            </div>
+          </div>
+        )}
+      </Section>
+
+      <footer className="text-center text-sm text-zinc-500">Portfolio content & links are being updated.</footer>
     </div>
   );
 }
