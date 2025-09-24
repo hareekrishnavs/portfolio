@@ -1,0 +1,285 @@
+{
+  "about_me": {
+    "summary": "Name: Hareekrishna V S\nFirst Name: Hareekrishna\nLast Name: Vellore Shanmugam\nDate of Birth: 22 Feb 2002\nEmail: hareekrishna.v.s@gmail.com\nLanguage: Tamil, English, French (learning)\n\nProfessional Interests\n- Applying AI, deep learning, reinforcement learning and machine learning to build software for finance and healthcare.\n- Designing scalable backend systems and integrating AI into production environments.\n\nCasual Interests\n- Sports: Enjoys badminton, cricket, and volleyball.\n- Fitness: Moderate gym workouts.\n- Food: Loves exploring new cuisines.\n- Reading: Casual story reader, chooses books that spark curiosity.\n- Animals: Passionate about animal welfare.\n- Media Entertainment: Movies and TV series.\n\nPersonality\n- Generally reserved, but warms up over time.\n- Good listener and curious about topics of interest.\n- Night owl working on becoming a morning person.\n- Prefers on-site collaboration for effective communication.\n- Comfortable working both independently and as part of a team.\n- Values iterating to an optimized solutions from an most viable solution.\n- Enjoys learning new technologies or techniques and applying them to projects."
+  },
+  "education": {
+    "summary": "Graduate\n\t- Organization: Concordia University\n\t- Degree: Master of Computer Science, Computer Science\n\t- Duration: Starting January 2026 (yet to join)\n\nUndergraduate\n\t- Organization: Shanmugha Arts, Science, Technology & Research Academy\n\t- Degree: B.Tech, Computer Science and Business System\n\t- Duration: July 2019 – July 2023\n\t- GPA: 8.41 / 10\n\t- Volunteering:\n\t\t- PLASMA – Blood donation organization\n\t\t- SCORE – Outreach program\n\n12th Grade\n\t- Organization: Sri Ram Dayal Khemka Vivekananda Vidyalaya Senior Secondary School\n\t- Course: Computer Science\n\t- Score: 465 / 500\n\t- Volunteering:\n\t\t- Pasion Tech – Practical teaching for students across Chennai district\n\n10th Grade\n\t- Organization: Smt. Mohini Saraogi Vivekananda Vidyalaya\n\t- GPA: 10 / 10\n\nOther Affiliations\n\t- Member – Ramanujan Mathematical Society"
+  },
+  "projects": [
+    {
+      "project_name": "Anomaly Detection in Surveillance Video - Research Collaboration",
+      "description": "Detects anomalies such as theft, fights, and suspicious activities in real-time video streams.",
+      "technologies": [
+        "YOLOv5",
+        "ConvLSTM",
+        "Autoencoder-based video anomaly detection model"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/surveillance-video-anomaly-detection"
+      ]
+    },
+    {
+      "project_name": "Seatbelt and Number Plate Detection from Real-World Security Cameras - Research Collaboration",
+      "description": "Detects seatbelt violations and records the number plates of traffic-violating vehicles.",
+      "technologies": [
+        "YOLOv5",
+        "Hypergraph-based detection",
+        "OCR for number plate recognition"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/seatbelt-detection"
+      ]
+    },
+    {
+      "project_name": "Speech-to-Text",
+      "description": "Converts spoken words into text for transcription and processing.",
+      "technologies": [
+        "wav2vec",
+        "Python"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/speech-to-text"
+      ]
+    },
+    {
+      "project_name": "Fouling Detection in Heat Exchangers - Research Collaboration",
+      "description": "Predicts fouling based on sensor data analysis.",
+      "technologies": [
+        "CNN-LSTM",
+        "Hidden Markov Model (HMM)"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/fouling-detection-in-heat-exchangers"
+      ]
+    },
+    {
+      "project_name": "Automated Detection of Overflowing Garbage",
+      "description": "Detects garbage outside bins using vision models.",
+      "technologies": [
+        "YOLOv4",
+        "OpenCV"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/overflowing-garbage-detection"
+      ]
+    },
+    {
+      "project_name": "Virtual Game Control",
+      "description": "Replicates real-world movements to control an in-game avatar.",
+      "technologies": [
+        "OpenCV",
+        "Python"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/virtual-game-control"
+      ]
+    },
+    {
+      "project_name": "Android Studio Projects",
+      "description": "Created simple applications with android studio.",
+      "technologies": [
+        "Android Studio",
+        "Java",
+        "SQLite"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/android-studio"
+      ]
+    },
+    {
+      "project_name": "MatLab Projects",
+      "description": "Created simple applications with MatLab.",
+      "technologies": [
+        "MatLab",
+        "R"
+      ],
+      "Link": [
+        "https://github.com/hareekrishnavs/matlab"
+      ]
+    }
+  ],
+  "certificates": [
+    {
+      "Topic": "Machine Learning & Data Science",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-ML-UDEMY.pdf"
+      ]
+    },
+    {
+      "Topic": "Image Processing in R",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/Image_matlab.pdf"
+      ]
+    },
+    {
+      "Topic": "MATLAB Onramp",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/MATLAB.pdf"
+      ]
+    },
+    {
+      "Topic": "Discrete Mathematics",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-Developing%20Soft%20Skills%20and%20Personality-NPTEL.jpg"
+      ]
+    },
+    {
+      "Topic": "Deep Learning",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/W-DL-NVIDIA.pdf"
+      ]
+    },
+    {
+      "Topic": "Data Visualization",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/W-DATA_VISUALIZATION-LETSUPGRAD.pdf"
+      ]
+    },
+    {
+      "Topic": "Web Development",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-WEB%20DEVELOPER-UDEMY.pdf"
+      ]
+    },
+    {
+      "Topic": "Python Programming",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-PYTHON-UNIVERSITY%20OF%20MICHIGAN.pdf"
+      ]
+    },
+    {
+      "Topic": "Internet of Things (IoT)",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-IOT-UNIVERSITY%20OF%20CALIFORNIA.pdf"
+      ]
+    },
+    {
+      "Topic": "Soft skills",
+      "Link": [
+        "https://raw.githubusercontent.com/hareekrishnavs/portfolio/main/public/certificates/C-Developing%20Soft%20Skills%20and%20Personality-NPTEL.jpg"
+      ]
+    },
+    {
+      "Topic": "Other workshops and cources",
+      "Link": [
+        "https://github.com/hareekrishnavs/portfolio/tree/main/public/certificates"
+      ]
+    }
+  ],
+  "competitive": [
+    "LeetCode",
+    "Kaggle"
+  ],
+  "experience": [
+    {
+      "organization": "Zoho Corporation - Zoho Finance Suite",
+      "location": "Guduvanchery, Tamil Nadu, India",
+      "roles": [
+        "Member of Technical Staff : Jul 2023 – Aug 2025",
+        "Project Trainee : Jan 2023 – Jul 2023"
+      ],
+      "responsibilities": [
+        "Products: Books, Expense, Business Spend Management (Procurement & Bill Pay)",
+        "Owned the Purchase Request & Procurement segment of the Purchase Order module",
+        "Designed, developed, deployed features from scratch; delivered production patches with minimal downtime",
+        "Fixed critical bugs, optimized API performance, and designed database schemas",
+        "Mentored junior colleagues, reviewed code, and participated in product development discussions",
+        "Implemented scheduler jobs, managed API logs, integrated third-party services, and handled OAuth-based authentication",
+        "Collaborated with cross-functional teams and resolved customer tickets requiring developer support"
+      ],
+      "technologies": [
+        "Java",
+        "MySQL",
+        "Deluge Scripts",
+        "REST APIs",
+        "OAuth",
+        "OOP",
+        "Git",
+        "Gradle",
+        "Redis",
+        "Kafka",
+        "Async Scheduler Jobs",
+        "Cursor AI",
+        "Copilot",
+        "IntelliJ",
+        "Postman",
+        "Zoho Creator",
+        "Zoho Sheets",
+        "Zoho Docs"
+      ]
+    },
+    {
+      "organization": "SASTRA University – DRDO",
+      "location": "Thanjavur, Tamil Nadu, India",
+      "roles": [
+        "Project Intern : Jan 2022 – May 2022, Aug 2022 – Dec 2022"
+      ],
+      "project": "Forecasting Application",
+      "responsibilities": [
+        "Conducted time-series data analysis, visualization, and processing",
+        "Experimented with multiple ML/DL forecasting algorithms; built a high-accuracy Bi-Gated LSTM RNN model",
+        "Hyperparameter tuning, model loss optimization, and deployment into web & system applications with visualization",
+        "Documented development process and collaborated in a 3-member team"
+      ],
+      "technologies": [
+        "Python",
+        "ML",
+        "DL",
+        "TensorFlow",
+        "PyTorch",
+        "OpenCV",
+        "Matplotlib",
+        "NumPy",
+        "Pandas",
+        "XGBoost",
+        "Auto Regression",
+        "ARIMA",
+        "CNN",
+        "RNN",
+        "Transformers",
+        "EEL",
+        "Tailwind",
+        "Conda",
+        "Google Colab",
+        "Anaconda",
+        "CUDA",
+        "Excel"
+      ]
+    },
+    {
+      "organization": "MITACS Globalink – University of Windsor",
+      "location": "Windsor, Ontario, Canada",
+      "roles": [
+        "Research Intern : May 2022 – Aug 2022"
+      ],
+      "project": "Cooperative Automated Driving",
+      "responsibilities": [
+        "Project : Cooperative Automated Driving",
+        "Automated a small-scale Quanser car for autonomous driving research",
+        "Analyzed sensor data from camera and LiDAR for lane tracking",
+        "Implemented object detection and LiDAR-based braking system",
+        "Applied mathematical methods for lane slope detection; collaborated in a 3-member team"
+      ],
+      "technologies": [
+        "Python",
+        "C++",
+        "Image Processing",
+        "TensorFlow",
+        "Computer Vision"
+      ]
+    },
+    {
+      "organization": "NeoDocto",
+      "location": "Virtual",
+      "roles": [
+        "Artificial Intelligence Intern : Oct 2021 – Dec 2021"
+      ],
+      "project": "Chatbot Assistant",
+      "responsibilities": [
+        "Project : Chatbot Assistant",
+        "Designed, built, and trained an AI-powered chatbot assistant"
+      ],
+      "technologies": []
+    }
+  ]
+}
