@@ -4,7 +4,6 @@ import PROFILE_SRC from "../../public/profile.png";
 export default function Navbar({ tab, setTab }) {
   const [open, setOpen] = useState(false);
 
-  // tabs: Ask Me appears before Read Me
   const tabs = [
     { id: "home", label: "Home" },
     { id: "chat", label: "Ask Me" },
@@ -13,13 +12,12 @@ export default function Navbar({ tab, setTab }) {
 
   function onSelect(id) {
     setTab(id);
-    setOpen(false); // close mobile menu when selecting
+    setOpen(false);
   }
 
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/50">
       <div className="container flex h-16 items-center justify-between px-4">
-        {/* Left: avatar + name (truncate to avoid overlap) */}
         <div className="min-w-0 flex items-center gap-3">
           <img
             src={PROFILE_SRC}
@@ -29,8 +27,6 @@ export default function Navbar({ tab, setTab }) {
           />
           <div className="truncate text-lg font-semibold tracking-tight">Hareekrishna VS</div>
         </div>
-
-        {/* Desktop: tabs only (no email/linkedin/resume) */}
         <div className="hidden items-center gap-3 md:flex">
           <nav className="flex gap-1 p-1 rounded-xl bg-zinc-900 ring-1 ring-zinc-800">
             {tabs.map((t) => {
@@ -49,7 +45,6 @@ export default function Navbar({ tab, setTab }) {
           </nav>
         </div>
 
-        {/* Mobile: hamburger */}
         <button
           className="inline-flex items-center justify-center rounded-lg p-2 text-zinc-300 ring-1 ring-zinc-800 hover:bg-zinc-900 md:hidden"
           onClick={() => setOpen((v) => !v)}
@@ -63,7 +58,6 @@ export default function Navbar({ tab, setTab }) {
         </button>
       </div>
 
-      {/* Mobile dropdown panel */}
       {open && (
         <div className="md:hidden border-t border-zinc-800 bg-zinc-950">
           <div className="container px-4 py-3 space-y-3">

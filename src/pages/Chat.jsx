@@ -1,4 +1,4 @@
-// src/components/Chat.jsx
+
 import { useState } from "react";
 
 const BASE_URL =
@@ -7,7 +7,6 @@ const BASE_URL =
 
 async function callApiChat(question) {
   const payload = { question };
-  // try /api/chat then fallback to /api/query (keeps parity with your api.js)
   try {
     const res = await fetch(`${BASE_URL}/api/chat`, {
       method: "POST",
@@ -34,22 +33,12 @@ async function callApiChat(question) {
   }
 }
 
-/**
- * Render the backend answer string into React elements.
- * - Supports bullet lines starting with "- "
- * - Supports numbered lists "1. " etc.
- * - Maps "[Link]" placeholders to the next URL from links[]
- * - If answer contains no bullets, renders as paragraphs (split by blank line)
- */
 function RenderedAnswer({ answer = "", links = [] }) {
-  // ensure defaults
   const linkQueue = Array.isArray(links) ? [...links] : [];
 
-  // helper to pop next link and clean trailing punctuation
   const popLink = () => {
     if (!linkQueue.length) return null;
     const raw = String(linkQueue.shift());
-    // remove trailing punctuation like ')' '.' ',' or whitespace
     return raw.replace(/[)\]\.,'"\s]+$/, "");
   };
 
@@ -57,7 +46,6 @@ function RenderedAnswer({ answer = "", links = [] }) {
     .replace(/\r\n/g, "\n")
     .split("\n");
 
-  // detect if it's primarily a bullet list or numbered list
   const isBulleted = lines.some((ln) => ln.trim().startsWith("- "));
   const isNumbered = lines.some((ln) => /^\d+\.\s+/.test(ln.trim()));
 
@@ -70,12 +58,10 @@ function RenderedAnswer({ answer = "", links = [] }) {
     return (
       <ul className="list-inside list-disc space-y-2 text-zinc-200">
         {items.map((item, idx) => {
-          // replace first occurrence of [Link] in the item with anchor
           const parts = item.split(/\[Link\]/i);
           if (parts.length === 1) {
             return <li key={idx}>{item}</li>;
           }
-          // there was at least one [Link]
           const frag = [];
           for (let i = 0; i < parts.length; i++) {
             frag.push(<span key={`t-${i}`}>{parts[i]}</span>);
@@ -147,7 +133,6 @@ function RenderedAnswer({ answer = "", links = [] }) {
     );
   }
 
-  // fallback: split into paragraphs
   const paras = String(answer || "").split(/\n\s*\n/).filter(Boolean);
   if (!paras.length) {
     return <div className="text-sm text-zinc-400">No answer. Try the Read Me or email hareekrishna.v.s@gmail.com</div>;
@@ -155,7 +140,6 @@ function RenderedAnswer({ answer = "", links = [] }) {
   return (
     <div className="space-y-3 text-zinc-200">
       {paras.map((p, i) => {
-        // If paragraph contains [Link], map sequentially
         if (/\[Link\]/i.test(p)) {
           const parts = p.split(/\[Link\]/i);
           const frag = [];
@@ -191,7 +175,7 @@ function RenderedAnswer({ answer = "", links = [] }) {
 export default function Chat() {
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([]); // {role: 'user'|'assistant', content, links}
+  const [items, setItems] = useState([]);
 
   const samples = [
     "Where did Haree study his bachelors?",
@@ -202,16 +186,13 @@ export default function Chat() {
   async function onAsk(text) {
     const question = (text ?? q).trim();
     if (!question) return;
-    // push user message
     setItems((prev) => [...prev, { role: "user", content: question }]);
     setLoading(true);
     setQ("");
     try {
       const res = await callApiChat(question);
-      // res expected: { answer: string, links: string[] }
       const answerText = res.answer || res?.message || "";
       const links = Array.isArray(res.links) ? res.links : [];
-      // If answer is empty -> show fallback contact
       let finalAnswer = answerText;
       if (!finalAnswer || finalAnswer.trim().length < 3) {
         finalAnswer = `No direct answer found. Please check the Read Me or contact hareekrishna.v.s@gmail.com`;

@@ -1,4 +1,4 @@
-// src/components/FloatingSidebar.jsx
+
 import { useEffect, useState } from "react";
 
 export default function FloatingSidebar() {
@@ -23,7 +23,6 @@ export default function FloatingSidebar() {
   async function copyEmail() {
     try {
       await navigator.clipboard.writeText(EMAIL);
-      // small transient visual feedback
       const el = document.createElement("div");
       el.textContent = "Email copied!";
       el.className =
@@ -112,11 +111,9 @@ export default function FloatingSidebar() {
     ),
   };
 
-  // If collapsed => show compact pill (visible on all sizes)
   if (collapsed) {
     return (
       <div
-        // position: bottom-right on small, right-middle on md+
         className="fixed right-4 md:top-1/3 md:bottom-auto bottom-4 z-50"
       >
         <button
