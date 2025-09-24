@@ -1,31 +1,57 @@
+// src/components/FloatingSidebar.jsx
+import { useEffect, useState } from "react";
+
 /**
- * FloatingSidebar - always-visible floating icon bar
- * Shows round icons (Email, LinkedIn, GitHub, Resume, X, Instagram).
+ * FloatingSidebar (collapsible)
+ * - Default expanded
+ * - Click the chevron to collapse into a compact button
+ * - Remembers state via localStorage ("hk.sidebarCollapsed")
  */
 export default function FloatingSidebar() {
   const EMAIL = "hareekrishna.v.s@gmail.com";
   const LINKEDIN_URL = "https://www.linkedin.com/in/hk2226/";
   const GITHUB_URL = "https://github.com/hareekrishnavs";
   const RESUME_URL = `${import.meta.env.BASE_URL || "/"}resume.pdf`;
-  const X_URL = "https://x.com/Hareekrishna_VS"; // replace with your X handle
-  const INSTA_URL = "https://www.instagram.com/hareekrishna_vs/"; // replace with your handle
+  const X_URL = "https://x.com/Hareekrishna_VS";
+  const INSTA_URL = "https://www.instagram.com/hareekrishna_vs/";
+
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("hk.sidebarCollapsed");
+    if (saved === "1") setCollapsed(true);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("hk.sidebarCollapsed", collapsed ? "1" : "0");
+  }, [collapsed]);
 
   async function copyEmail() {
     try {
       await navigator.clipboard.writeText(EMAIL);
-      alert("Email copied!");
+      // quick lightweight feedback; replace with a toast if you have one
+      const el = document.createElement("div");
+      el.textContent = "Email copied!";
+      el.className =
+        "fixed right-4 top-4 z-[999] rounded-md bg-zinc-900 text-zinc-100 px-3 py-1 text-sm ring-1 ring-zinc-700";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
     } catch {
-      alert("Failed to copy");
+      window.location.href = `mailto:${EMAIL}`;
     }
   }
 
   function IconButton({ href, onClick, icon, label }) {
     const inner = (
-      <div className="h-11 w-11 flex items-center justify-center rounded-full bg-zinc-900 ring-1 ring-zinc-700 hover:bg-indigo-600 hover:text-white transition">
+      <div
+        className="h-11 w-11 flex items-center justify-center rounded-full bg-zinc-900 ring-1 ring-zinc-700
+                   hover:bg-indigo-600 hover:text-white transition"
+        title={label}
+        aria-label={label}
+      >
         {icon}
       </div>
     );
-
     if (href) {
       return (
         <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
@@ -75,8 +101,36 @@ export default function FloatingSidebar() {
         <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.6 0 3 1.4 3 3v10c0 1.6-1.4 3-3 3H7c-1.6 0-3-1.4-3-3V7c0-1.6 1.4-3 3-3h10zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm4.5-3a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" />
       </svg>
     ),
+    chevronLeft: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+    ),
+    chevronRight: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 18l6-6-6-6" />
+      </svg>
+    ),
   };
 
+  // Collapsed state: show a small pill with an expand button
+  if (collapsed) {
+    return (
+      <div className="fixed right-4 top-1/3 z-50">
+        <button
+          onClick={() => setCollapsed(false)}
+          className="flex items-center gap-2 rounded-full bg-zinc-900/90 px-3 py-2 ring-1 ring-zinc-700 hover:bg-indigo-600 transition"
+          aria-label="Expand sidebar"
+          title="Expand"
+        >
+          {Icon.chevronLeft}
+          <span className="text-xs text-zinc-200">Contacts</span>
+        </button>
+      </div>
+    );
+  }
+
+  // Expanded state: full vertical rail with a collapse chevron at bottom
   return (
     <div className="fixed right-4 top-1/3 z-50 flex flex-col items-center gap-3">
       <IconButton onClick={copyEmail} icon={Icon.mail} label="Email" />
@@ -85,6 +139,16 @@ export default function FloatingSidebar() {
       <IconButton href={RESUME_URL} icon={Icon.resume} label="Resume" />
       <IconButton href={X_URL} icon={Icon.x} label="X" />
       <IconButton href={INSTA_URL} icon={Icon.insta} label="Instagram" />
+
+      {/* Collapse control */}
+      <button
+        onClick={() => setCollapsed(true)}
+        className="mt-2 h-8 w-8 inline-flex items-center justify-center rounded-full bg-zinc-900 ring-1 ring-zinc-700 hover:bg-zinc-800 transition"
+        aria-label="Collapse sidebar"
+        title="Collapse"
+      >
+        {Icon.chevronRight}
+      </button>
     </div>
   );
 }
