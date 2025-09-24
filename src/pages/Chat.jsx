@@ -1,35 +1,224 @@
+// src/components/Chat.jsx
 import { useState } from "react";
-import { chat } from "../lib/api";
 
-const samples = [
-  "Where did Haree study his bachelors?",
-  "List projects that use YOLO.",
-  "How many years of experience do you have?",
-];
+const BASE_URL =
+  import.meta.env.VITE_API_BASE?.replace(/\/+$/, "") ||
+  "https://haree2226-hareekrishnavs-portfolio-backend.hf.space";
+
+async function callApiChat(question) {
+  const payload = { question };
+  // try /api/chat then fallback to /api/query (keeps parity with your api.js)
+  try {
+    const res = await fetch(`${BASE_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`API ${res.status}: ${txt}`);
+    }
+    return await res.json();
+  } catch (err) {
+    // fallback
+    const res = await fetch(`${BASE_URL}/api/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`API ${res.status}: ${txt}`);
+    }
+    return await res.json();
+  }
+}
+
+/**
+ * Render the backend answer string into React elements.
+ * - Supports bullet lines starting with "- "
+ * - Supports numbered lists "1. " etc.
+ * - Maps "[Link]" placeholders to the next URL from links[]
+ * - If answer contains no bullets, renders as paragraphs (split by blank line)
+ */
+function RenderedAnswer({ answer = "", links = [] }) {
+  // ensure defaults
+  const linkQueue = Array.isArray(links) ? [...links] : [];
+
+  // helper to pop next link and clean trailing punctuation
+  const popLink = () => {
+    if (!linkQueue.length) return null;
+    const raw = String(linkQueue.shift());
+    // remove trailing punctuation like ')' '.' ',' or whitespace
+    return raw.replace(/[)\]\.,'"\s]+$/, "");
+  };
+
+  const lines = String(answer || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n");
+
+  // detect if it's primarily a bullet list or numbered list
+  const isBulleted = lines.some((ln) => ln.trim().startsWith("- "));
+  const isNumbered = lines.some((ln) => /^\d+\.\s+/.test(ln.trim()));
+
+  if (isBulleted) {
+    const items = lines
+      .map((ln) => ln.trim())
+      .filter((ln) => ln.startsWith("- "))
+      .map((ln) => ln.replace(/^-+\s*/, "").trim());
+
+    return (
+      <ul className="list-inside list-disc space-y-2 text-zinc-200">
+        {items.map((item, idx) => {
+          // replace first occurrence of [Link] in the item with anchor
+          const parts = item.split(/\[Link\]/i);
+          if (parts.length === 1) {
+            return <li key={idx}>{item}</li>;
+          }
+          // there was at least one [Link]
+          const frag = [];
+          for (let i = 0; i < parts.length; i++) {
+            frag.push(<span key={`t-${i}`}>{parts[i]}</span>);
+            if (i < parts.length - 1) {
+              const url = popLink();
+              if (url) {
+                frag.push(
+                  <a
+                    key={`a-${i}`}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-1 inline-block rounded px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white hover:underline"
+                  >
+                    <strong>Link</strong>
+                  </a>
+                );
+              } else {
+                frag.push(
+                  <span key={`na-${i}`} className="ml-1 inline-block text-xs text-zinc-400">
+                    [Link]
+                  </span>
+                );
+              }
+            }
+          }
+          return <li key={idx}>{frag}</li>;
+        })}
+      </ul>
+    );
+  }
+
+  if (isNumbered) {
+    const items = lines
+      .map((ln) => ln.trim())
+      .filter((ln) => /^\d+\.\s+/.test(ln))
+      .map((ln) => ln.replace(/^\d+\.\s+/, "").trim());
+
+    return (
+      <ol className="list-inside list-decimal space-y-2 text-zinc-200">
+        {items.map((item, idx) => {
+          const parts = item.split(/\[Link\]/i);
+          if (parts.length === 1) return <li key={idx}>{item}</li>;
+          const frag = [];
+          for (let i = 0; i < parts.length; i++) {
+            frag.push(<span key={`t-${i}`}>{parts[i]}</span>);
+            if (i < parts.length - 1) {
+              const url = popLink();
+              if (url) {
+                frag.push(
+                  <a
+                    key={`a-${i}`}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-1 inline-block rounded px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white hover:underline"
+                  >
+                    <strong>Link</strong>
+                  </a>
+                );
+              } else {
+                frag.push(<span key={`na-${i}`} className="ml-1 text-xs text-zinc-400">[Link]</span>);
+              }
+            }
+          }
+          return <li key={idx}>{frag}</li>;
+        })}
+      </ol>
+    );
+  }
+
+  // fallback: split into paragraphs
+  const paras = String(answer || "").split(/\n\s*\n/).filter(Boolean);
+  if (!paras.length) {
+    return <div className="text-sm text-zinc-400">No answer. Try the Read Me or email hareekrishna.v.s@gmail.com</div>;
+  }
+  return (
+    <div className="space-y-3 text-zinc-200">
+      {paras.map((p, i) => {
+        // If paragraph contains [Link], map sequentially
+        if (/\[Link\]/i.test(p)) {
+          const parts = p.split(/\[Link\]/i);
+          const frag = [];
+          for (let j = 0; j < parts.length; j++) {
+            frag.push(<span key={`pt-${i}-${j}`}>{parts[j]}</span>);
+            if (j < parts.length - 1) {
+              const url = popLink();
+              if (url) {
+                frag.push(
+                  <a
+                    key={`pa-${i}-${j}`}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-1 inline-block rounded px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white hover:underline"
+                  >
+                    <strong>Link</strong>
+                  </a>
+                );
+              } else {
+                frag.push(<span key={`pna-${i}-${j}`} className="text-xs text-zinc-400">[Link]</span>);
+              }
+            }
+          }
+          return <p key={i}>{frag}</p>;
+        }
+        return <p key={i}>{p}</p>;
+      })}
+    </div>
+  );
+}
 
 export default function Chat() {
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]); // {role: 'user'|'assistant', content, links}
+
+  const samples = [
+    "Where did Haree study his bachelors?",
+    "List projects that use YOLO.",
+    "How many years of experience do you have?",
+  ];
 
   async function onAsk(text) {
     const question = (text ?? q).trim();
     if (!question) return;
-    const userMsg = { role: "user", content: question };
-    setItems((prev) => [...prev, userMsg]);
+    // push user message
+    setItems((prev) => [...prev, { role: "user", content: question }]);
     setLoading(true);
     setQ("");
-
     try {
-      const res = await chat(userMsg.content);
-      const botMsg = {
-        role: "assistant",
-        content: res.answer || JSON.stringify(res, null, 2),
-        sources: res.sources || [],
-      };
-      setItems((prev) => [...prev, botMsg]);
+      const res = await callApiChat(question);
+      // res expected: { answer: string, links: string[] }
+      const answerText = res.answer || res?.message || "";
+      const links = Array.isArray(res.links) ? res.links : [];
+      // If answer is empty -> show fallback contact
+      let finalAnswer = answerText;
+      if (!finalAnswer || finalAnswer.trim().length < 3) {
+        finalAnswer = `No direct answer found. Please check the Read Me or contact hareekrishna.v.s@gmail.com`;
+      }
+      setItems((prev) => [...prev, { role: "assistant", content: finalAnswer, links }]);
     } catch (err) {
-      setItems((prev) => [...prev, { role: "assistant", content: `Error: ${err.message}` }]);
+      setItems((prev) => [...prev, { role: "assistant", content: `Error: ${err.message}. Check Read Me or email hareekrishna.v.s@gmail.com` }]);
     } finally {
       setLoading(false);
     }
@@ -37,41 +226,32 @@ export default function Chat() {
 
   return (
     <div className="container py-8 space-y-4">
-      <h1 className="title-2">Ask your question about Haree</h1>
+      <h1 className="title-2 text-zinc-100">Ask your question about Haree</h1>
 
       <div className="rounded-2xl border border-yellow-600/30 bg-yellow-900/10 p-3 text-sm text-yellow-200">
         ⚠️ Heads up: The backend runs on Hugging Face Spaces. If it was sleeping, the first request may be a cold start and take a bit longer.
       </div>
 
-      <div className="card min-h-[50vh]">
-        <div className="space-y-3">
+      <div className="card min-h-[36vh] p-4">
+        <div className="space-y-4">
+          {items.length === 0 && <div className="text-zinc-400">Kindly ask direct questions like "List all the projects with Machine Learning"</div>}
+
           {items.map((m, i) => (
             <div
               key={i}
-              className={`rounded-xl p-3 ${m.role === "user" ? "bg-indigo-900/30" : "bg-neutral-800/60"}`}
+              className={`rounded-xl p-3 ${m.role === "user" ? "bg-indigo-900/20" : "bg-neutral-800/60"}`}
             >
-              <div className="text-xs uppercase tracking-wide muted mb-1">
+              <div className="text-xs uppercase tracking-wide muted mb-1 text-zinc-300">
                 {m.role === "user" ? "You" : "Assistant"}
               </div>
-              <div className="whitespace-pre-wrap">{m.content}</div>
 
-              {m.sources?.length ? (
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-xs muted">Sources</summary>
-                  <ul className="mt-1 text-xs list-disc pl-6 text-neutral-300">
-                    {m.sources.map((s, idx) => (
-                      <li key={idx}>
-                        <span className="font-mono">{s.path}</span>{" "}
-                        {typeof s.score === "number" ? `– score: ${s.score.toFixed(3)}` : ""}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : null}
+              {m.role === "user" ? (
+                <div className="whitespace-pre-wrap text-zinc-100">{m.content}</div>
+              ) : (
+                <RenderedAnswer answer={m.content} links={m.links || []} />
+              )}
             </div>
           ))}
-
-          {items.length === 0 && <div className="muted">Ask about projects, experience, education…</div>}
         </div>
       </div>
 
@@ -81,15 +261,19 @@ export default function Chat() {
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onAsk()}
           placeholder="Type your question…"
-          className="flex-1 rounded-xl bg-neutral-900 px-4 py-3 outline-none ring-1 ring-neutral-800 focus:ring-indigo-500"
+          className="flex-1 rounded-xl bg-neutral-900 px-4 py-3 outline-none ring-1 ring-neutral-800 focus:ring-indigo-500 text-zinc-200"
         />
-        <button className="btn btn-primary" onClick={() => onAsk()} disabled={loading}>
+        <button
+          className="btn btn-primary"
+          onClick={() => onAsk()}
+          disabled={loading}
+        >
           {loading ? "Thinking…" : "Ask"}
         </button>
       </div>
 
       <div>
-        <div className="text-sm muted mb-2">Try:</div>
+        <div className="text-sm muted mb-2 text-zinc-400">Try:</div>
         <div className="flex flex-wrap gap-2">
           {samples.map((s, i) => (
             <button key={i} onClick={() => onAsk(s)} className="btn text-xs">

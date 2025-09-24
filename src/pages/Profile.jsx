@@ -189,7 +189,7 @@ export default function Profile() {
               return (
                 <div key={i} className="rounded-xl bg-zinc-900 p-4 ring-1 ring-zinc-800 flex items-center justify-between">
                   <div className="text-base text-zinc-300 font-medium">{title}</div>
-                  {raw ? <a href={previewLink(raw)} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-200 hover:text-white">Open</a> : <div className="text-xs text-zinc-500">No link</div>}
+                  {raw ? <a href={previewLink(raw)} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-200 hover:text-white">Certificate</a> : <div className="text-xs text-zinc-500">No link</div>}
                 </div>
               );
             })}
