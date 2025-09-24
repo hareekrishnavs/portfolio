@@ -28,7 +28,7 @@ export default function Home({ goAsk, goRead }) {
           </div>
 
           <p className="text-xs muted">
-            ⚠️ This portfolio is a work in progress. More details, images, and documents will be added.
+             I'll do what you can't, and you do what I can't. That's how great work happens. So, how can I help?
           </p>
         </div>
       </section>

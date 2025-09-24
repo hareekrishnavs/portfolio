@@ -2,7 +2,7 @@ import { useState } from "react";
 import { chat } from "../lib/api";
 
 const samples = [
-  "Where did Hareekrishna study his bachelors?",
+  "Where did Haree study his bachelors?",
   "List projects that use YOLO.",
   "How many years of experience do you have?",
 ];
@@ -37,7 +37,7 @@ export default function Chat() {
 
   return (
     <div className="container py-8 space-y-4">
-      <h1 className="title-2">Ask your question about Hareekrishna</h1>
+      <h1 className="title-2">Ask your question about Haree</h1>
 
       <div className="rounded-2xl border border-yellow-600/30 bg-yellow-900/10 p-3 text-sm text-yellow-200">
         ⚠️ Heads up: The backend runs on Hugging Face Spaces. If it was sleeping, the first request may be a cold start and take a bit longer.
