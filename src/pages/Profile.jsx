@@ -207,8 +207,6 @@ export default function Profile() {
           </div>
         )}
       </Section>
-
-      <footer className="text-center text-sm text-zinc-500">Portfolio content & links are being updated.</footer>
     </div>
   );
 }
